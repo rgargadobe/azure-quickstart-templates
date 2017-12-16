@@ -2,7 +2,13 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "adminUsername": {
+   "identityName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of user assigned identity."
+      }
+    },
+   "adminUsername": {
       "type": "string",
       "metadata": {
         "description": "Username for the Virtual Machine."
@@ -58,7 +64,7 @@
       "metadata": {
         "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
       },
-      "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/201-vm-msi-linux"
+      "defaultValue": "https://raw.githubusercontent.com/rgargadobe/azure-quickstart-templates/master/201-vm-msi-linux"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
@@ -133,6 +139,14 @@
       },
       "kind": "Storage",
       "properties": {}
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "name": "[parameters('identityName')]",
+      "apiVersion": "2015-08-31-PREVIEW",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      }
     },
     {
       "apiVersion": "2016-09-01",
@@ -241,6 +255,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "identityName": {
+            "value": "[parameters('identityName')]"
           },
           "vmSize": {
             "value": "[parameters('vmSize')]"
